@@ -1,0 +1,45 @@
+security:
+  - acesstoken : []
+parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: ID do usuário
+responses:
+  200:
+    description: Usuário atualizado com sucesso.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+             type: string
+            username:
+              type: string
+            email:
+              type: string
+            
+  401:
+    description: Token de autenticação inválido.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            msg:
+              type: string
+  404:
+    description: Usuário não encontrado.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            msg:
+              type: string
+tags:
+  - user

@@ -1,0 +1,30 @@
+security:
+  - acesstoken : []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - username
+          - password
+          - name
+          - email
+        properties:
+          name:
+            type: string
+          email: 
+            type: string
+          username:
+            type: string
+          password:
+            type: string
+      example:
+        username: admin
+        password: admin
+        name: admin
+        email: admin@mail.com
+  required: true
+  description: Envia dados para criação de usuário
+tags:
+  - user

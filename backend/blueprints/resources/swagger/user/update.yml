@@ -1,0 +1,55 @@
+security:
+  - acesstoken : []
+parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            description: ID do usuário
+requestBody:
+  description: Dados do para atualização.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - username
+          - password
+          - name
+          - email
+        properties:
+          name:
+            type: string
+          email: 
+            type: string
+          username:
+            type: string
+          password:
+            type: string
+      example:
+        username: admin
+        password: admin
+        name: admin
+        email: admin@mail.com
+responses:
+        200:
+          description: Usuário atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+        401:
+          description: Token de autenticação inválido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+tags:
+  - user

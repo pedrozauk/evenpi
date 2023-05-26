@@ -1,0 +1,22 @@
+security:
+  - refreshtoken: []
+
+responses:
+        200:
+          description: Token de autenticação atualizado com sucesso.
+          schema:
+            type: object
+            properties:
+              acess_token:
+                type: string
+        401:
+          description: Token de autenticação inválido.
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            message: Token de autenticação inválido.
+tags:
+   - auth

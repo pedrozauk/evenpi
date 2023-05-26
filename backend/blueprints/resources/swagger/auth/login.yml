@@ -1,0 +1,42 @@
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - username
+          - password
+        properties:
+          username:
+            type: string
+          password:
+            type: string
+      example:
+        username: admin
+        password: admin
+  required: true
+  description: Para realizar a autenticação.
+responses:
+        '200':
+          description: Retorna token e refresh token para autenticação.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  acess_token:
+                    type: string
+                  refresh_token::
+                    type: string
+        '401':
+          description: Token de autenticação inválido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+            
+tags:
+  - auth
