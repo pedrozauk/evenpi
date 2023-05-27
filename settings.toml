@@ -1,0 +1,10 @@
+[default]
+EXTENSIONS = [
+    'backend.blueprints.resources:init_app',
+    'backend.ext.auth:init_app',
+    'backend.ext.base:init_app',
+    'backend.ext.commands:init_app',
+    'backend.ext.cors:init_app',
+    'backend.ext.docs_api:init_app',
+    'backend.ext.mail:init_app',
+]
