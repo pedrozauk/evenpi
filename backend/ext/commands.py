@@ -26,4 +26,3 @@ def init_app(app):
         except:
             print("Error in add user")
         
-        
