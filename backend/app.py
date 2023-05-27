@@ -3,7 +3,7 @@ from flask import Flask
 
 
 
-from api.ext import configuration
+from backend.ext import configuration
 
 def create_app():
     app = Flask(__name__)

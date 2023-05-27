@@ -68,7 +68,6 @@ def update_user(id):
 #rota para ativar usuário
 @bp_user.route('/active/<id>', methods=["GET"])
 @jwt_required()
-@swag_from('swagger/user/active.yml')
 def active_user(id):
     query = db.session.query(User).where(User.id == id).first()
     if query is None:
@@ -81,7 +80,6 @@ def active_user(id):
 #rota para desativar usuário
 @bp_user.route('/deactive/<id>', methods=["GET"])
 @jwt_required()
-@swag_from('swagger/user/deactive.yml')
 def deactive_user(id):
     query = db.session.query(User).where(User.id == id).first()
     if query is None:
@@ -112,7 +110,6 @@ def get_users(id):
 #rota para redefinição de senha
 @bp_user.route('/reset_password', methods=['POST'])
 @jwt_required()
-@swag_from('swagger/user/reset_password.yml')
 def reset_password():
     # Pega informações enviadas no json
     user_username = request.get_json().get('username')

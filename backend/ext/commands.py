@@ -1,6 +1,6 @@
 import click
-from api.ext.base import db
-from api.models import User
+from backend.ext.base import db
+from backend.models import User
 def create_db():
     """ Criar o banco"""
     db.create_all()

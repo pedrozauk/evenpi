@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from api.ext.base import db 
+from backend.ext.base import db 
 
 
                                       
