@@ -6,6 +6,7 @@ EXTENSIONS =[
     "backend.ext.cors:init_app",
     "backend.ext.mail:init_app",
     "backend.ext.base:init_app",
+    "backend.ext.serial:init_app",
     "backend.ext.migration:init_app",
     "backend.ext.docs_api:init_app",
 ]

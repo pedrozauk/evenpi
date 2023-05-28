@@ -5,6 +5,7 @@ from backend.ext.base import db
 from datetime import datetime
 from flask_sqlalchemy import session
 from backend.ext.base import db
+from backend.serializing import EventoSchema
 bp_evento = Blueprint("evento", __name__, url_prefix="/api/v1/evento")
 
 @bp_evento.route("/get_all", methods=["GET"])
@@ -12,28 +13,23 @@ bp_evento = Blueprint("evento", __name__, url_prefix="/api/v1/evento")
 def get_all():
     query = Evento.query.all()
     retorno = {"data":[]}
+    evento_schema = EventoSchema()
     for evento in query:
-        retorno["data"].append({
-                                    "evento":evento.descricao, 
-                                    "data_inicio":evento.data_inicio.isoformat(), 
-                                    "status": evento.status,
-                                    "data_fim":evento.data_fim.isoformat(),
-                                    "duracao": evento.duracao,
-                                    "id": evento.id
-                                    })
+        retorno["data"].append(evento_schema.dump(evento))
         
     return jsonify(retorno)
 
 @bp_evento.route("/create", methods=["POST"])
 @jwt_required()
 def create_evento():
+    evento_schema = EventoSchema()
     descricao = request.get_json().get("descricao")
     data_inicio = request.get_json().get("data_inicio")
     data_fim = request.get_json().get("data_fim")
     duracao = request.get_json().get("duracao")
     status = True
     if descricao is None or data_inicio is None or data_fim is None or duracao is None:
-        return jsonify({"msg": "Dados incompletos"})
+        return jsonify({"msg": "Dados incompletos"}), 400
     novo_evento = Evento()
     novo_evento.descricao = descricao
     novo_evento.data_fim = datetime.strptime(data_fim, "%d/%m/%Y %H:%M:%S")
@@ -45,14 +41,7 @@ def create_evento():
     db.session.refresh(novo_evento)
   
     return jsonify({"msg": "sucess",
-                    "data":{
-                                "id": novo_evento.id,
-                                "evento": novo_evento.descricao,
-                                "data_inicio": novo_evento.data_inicio.isoformat(),
-                                "data_fim": novo_evento.data_fim.isoformat(),
-                                "duracao": novo_evento.duracao,
-                                "status": novo_evento.status
-                                }})
+                    "data": evento_schema.dump(novo_evento)})
 
 @bp_evento.route("/edit/<id>", methods=["PATCH"])
 @jwt_required()
