@@ -3,7 +3,8 @@ from flask_jwt_extended import jwt_required
 from backend.models import Evento
 from backend.ext.base import db
 from datetime import datetime
-
+from flask_sqlalchemy import session
+from backend.ext.base import db
 bp_evento = Blueprint("evento", __name__, url_prefix="/api/v1/evento")
 
 @bp_evento.route("/get_all", methods=["GET"])
@@ -12,7 +13,15 @@ def get_all():
     query = Evento.query.all()
     retorno = {"data":[]}
     for evento in query:
-        retorno["data"].append({"evento":evento.descricao})
+        retorno["data"].append({
+                                    "evento":evento.descricao, 
+                                    "data_inicio":evento.data_inicio.isoformat(), 
+                                    "status": evento.status,
+                                    "data_fim":evento.data_fim.isoformat(),
+                                    "duracao": evento.duracao,
+                                    "id": evento.id
+                                    })
+        
     return jsonify(retorno)
 
 @bp_evento.route("/create", methods=["POST"])
@@ -44,3 +53,38 @@ def create_evento():
                                 "duracao": novo_evento.duracao,
                                 "status": novo_evento.status
                                 }})
+
+@bp_evento.route("/edit/<id>", methods=["PATCH"])
+@jwt_required()
+def editaEvento(id: str):
+    query = Evento.query.where(Evento.id == id).first()
+    if query:
+        return jsonify(msg = "evento existe")
+    else:
+        return jsonify(msg = "evento não encontrado")
+
+
+@bp_evento.route("/deactivate/<id>", methods=["GET"])
+@jwt_required()
+def desativa_evento(id:str):
+
+    evento = Evento.query.where(Evento.id == id).first()
+    evento.status = False
+    db.session.commit()
+    return jsonify({
+        "msg": "evento desativado",
+        "id" : evento.id,
+        "status" : evento.status
+    })
+
+@bp_evento.route("/activate/<id>", methods=["GET"])
+@jwt_required()
+def ativa_evento(id:str):
+    evento = Evento.query.where(Evento.id == id).first()
+    evento.status = True
+    db.session.commit()
+    return jsonify({
+        "msg": "evento ativado",
+        "id" : evento.id,
+        "status" : evento.status
+    })
