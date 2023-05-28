@@ -24,6 +24,7 @@ def create_atividade():
         nova_atividade = atividade_schema.load(request.json, session=db.session)
     except exceptions.ValidationError as e:
         return jsonify({"error":"Erro ao criar atividade", "message":"Campos obrigatórios em branco"}), 400
+    nova_atividade.status = True
     db.session.add(nova_atividade)
     db.session.commit()
     return jsonify({"msg": "sucess",

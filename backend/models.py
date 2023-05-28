@@ -58,7 +58,7 @@ class Ingressos(db.Model):
 
 class Atividades(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    id_evento = db.Column(db.Integer, db.ForeignKey("evento.id"), unique=True)
+    id_evento = db.Column(db.Integer, db.ForeignKey("evento.id"))
     descricao = db.Column(db.String(100))
     data = db.Column(db.DateTime)
     palestrante = db.Column(db.String(100))
