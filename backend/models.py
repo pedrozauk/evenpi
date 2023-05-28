@@ -10,6 +10,8 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(250))
+    cpf = db.Column(db.String(11))
+    date_birth = db.Column(db.DateTime)
     username = db.Column(db.String(100),unique=True)
     tipo_usuario = db.Column(db.Integer, db.ForeignKey("type_user.id"))
     cellphone = db.Column(db.String(11))
@@ -61,6 +63,7 @@ class Atividades(db.Model):
     data = db.Column(db.DateTime)
     palestrante = db.Column(db.String(100))
     status = db.Column(db.Boolean)
+    carga_horaria = db.Column(db.Integer)
     tipo_atividade = db.Column(db.Integer, db.ForeignKey("tipo_atividade.id"))
     fk_atividade = db.relationship("ParticipanteAtividade", backref="atividades", lazy=True)
 
@@ -73,6 +76,7 @@ class ParticipanteAtividade(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     id_participante = db.Column(db.Integer, db.ForeignKey("participante.id"), unique=True)
     id_atividade = db.Column(db.Integer, db.ForeignKey("atividades.id"), unique=True)
+    checkin = db.Column(db.Boolean)
     status = db.Column(db.Boolean)
     fk_certificado_participante_atividade = db.relationship("CertificadoParticipanteAtividade", backref="participante_atividade", lazy=True)
 

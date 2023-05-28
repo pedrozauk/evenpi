@@ -16,10 +16,20 @@ class UserSchema(ma.SQLAlchemySchema):
     cellphone = ma.auto_field()
     type_user = ma.auto_field()
 
-class AtividadesSchema(ma.SQLAlchemyAutoSchema):
+class AtividadesSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Atividades
-        include_fk = True
+        load_instance = True
+
+    id = ma.auto_field()
+    descricao = ma.auto_field(required=True)
+    data = ma.auto_field(required=True)
+    palestrante = ma.auto_field(required=True)
+    carga_horaria = ma.auto_field(required=True)
+    status = ma.auto_field()
+    id_evento = ma.auto_field(required=True)
+    tipo_atividade = ma.auto_field(required=True)
+
 
 class CertificadoSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

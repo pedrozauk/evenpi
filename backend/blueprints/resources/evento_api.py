@@ -13,11 +13,8 @@ bp_evento = Blueprint("evento", __name__, url_prefix="/api/v1/evento")
 def get_all():
     query = Evento.query.all()
     retorno = {"data":[]}
-    evento_schema = EventoSchema()
-    for evento in query:
-        retorno["data"].append(evento_schema.dump(evento))
-        
-    return jsonify(retorno)
+    evento_schema = EventoSchema(many=True)
+    return evento_schema.jsonify(query)
 
 @bp_evento.route("/create", methods=["POST"])
 @jwt_required()
@@ -46,9 +43,13 @@ def create_evento():
 @bp_evento.route("/edit/<id>", methods=["PATCH"])
 @jwt_required()
 def editaEvento(id: str):
-    query = Evento.query.where(Evento.id == id).first()
+    evento_schema = EventoSchema()
+    query = Evento.query.filter(Evento.id == id)
+    novos_dados = evento_schema.load(request.json)
     if query:
-        return jsonify(msg = "evento existe")
+        query.update(novos_dados)
+        db.session.commit()
+        return jsonify(msg = "evento atualizado")
     else:
         return jsonify(msg = "evento não encontrado")
 
