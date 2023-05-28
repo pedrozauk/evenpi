@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.models import User
+from backend.models import User, TypeUser
 from backend.ext.base import db
 from flask_mail import Message
 from backend.ext.mail import mail
 import random, os, string
 from flasgger import swag_from
+from backend.serializing import UserSchema, TypeUserSchema
 
 #define o blueprint de usuarios
 bp_user = Blueprint('user_route', __name__, url_prefix='/api/v1/user')
@@ -95,16 +96,12 @@ def deactive_user(id):
 @jwt_required()
 @swag_from('swagger/user/read.yml')
 def get_users(id):
-    query = db.session.query(User).where(User.id == id).first()
-    if query is None:
+    user = db.session.query(User).where(User.id == id).first()
+    user_schema = UserSchema()
+    if user is None:
         return jsonify({"msg": "Usuário não encontrado"}), 404
     else:
-        return jsonify({
-                        "id": query.id,
-                        "name": query.name,
-                        "username": query.username,
-                        "email": query.email
-                        })
+        return jsonify(user_schema.dump(user))
 
 
 #rota para redefinição de senha
@@ -141,3 +138,21 @@ def reset_password():
 
         return jsonify({"msg" : "email enviado com uma nova senha enviado"}) 
 
+
+#rota criar para tipo de usuário
+@bp_user.route('/tipo_usuario/', methods=["POST","GET","PUT","DELETE"])
+@jwt_required()
+def criar_tipo_usuario():
+    if request.method == "POST":
+        descricao = request.get_json().get("descricao")
+        if descricao is None:
+            return jsonify({"msg": "Dados incompletos"}), 404
+        novo_tipo_usuario = TypeUser()
+        novo_tipo_usuario.descricao = descricao
+        novo_tipo_usuario.status = True
+        db.session.add(novo_tipo_usuario)
+        db.session.commit()
+        return jsonify({"msg": "Tipo de usuário criado com sucesso"})
+    
+    elif request.method == "GET":
+        return jsonify(TypeUserSchema(many=True).dump(db.session.query(TypeUser).all()))

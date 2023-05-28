@@ -29,7 +29,7 @@ def create_evento():
     duracao = request.get_json().get("duracao")
     status = True
     if descricao is None or data_inicio is None or data_fim is None or duracao is None:
-        return jsonify({"msg": "Dados incompletos"}), 400
+        return jsonify({"msg": "Dados incompletos"}), 404
     novo_evento = Evento()
     novo_evento.descricao = descricao
     novo_evento.data_fim = datetime.strptime(data_fim, "%d/%m/%Y %H:%M:%S")
