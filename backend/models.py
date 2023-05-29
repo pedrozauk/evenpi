@@ -32,12 +32,12 @@ class Evento(db.Model):
     data_inicio = db.Column(db.DateTime)
     duracao = db.Column(db.Integer)
     data_fim = db.Column(db.DateTime)
+    atividades = db.relationship('Atividades', backref='evento', lazy=True)
 
 class Participante(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), unique=True)
     evento_id = db.Column(db.Integer, db.ForeignKey("evento.id"), unique=True)
-    certificado_id = db.Column(db.Integer, db.ForeignKey("certificado.id"), unique=True)
     ingressos_id = db.Column(db.Integer, db.ForeignKey("ingressos.id"), unique=True)
     status = db.Column(db.Boolean)
 
@@ -58,14 +58,13 @@ class Ingressos(db.Model):
 
 class Atividades(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    id_evento = db.Column(db.Integer, db.ForeignKey("evento.id"))
     descricao = db.Column(db.String(100))
     data = db.Column(db.DateTime)
     palestrante = db.Column(db.String(100))
     status = db.Column(db.Boolean)
     carga_horaria = db.Column(db.Integer)
     tipo_atividade = db.Column(db.Integer, db.ForeignKey("tipo_atividade.id"))
-    fk_atividade = db.relationship("ParticipanteAtividade", backref="atividades", lazy=True)
+    evento_id = db.Column(db.Integer, db.ForeignKey('evento.id'), nullable=False, name="fk_evento")
 
 class TipoAtividade(db.Model):
     id = db.Column(db.Integer, primary_key = True)

@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import jsonify
 from flask import request
 from flask_jwt_extended import jwt_required
-from backend.models import Evento, User , Atividades, Certificado, TypeUser
+from backend.models import Evento, User , Atividades, Certificado, TypeUser, Participante, ParticipanteAtividade
 from backend.ext.base import db
 from backend.serializing import AtividadesSchema
 from flask_marshmallow import exceptions
@@ -14,7 +14,7 @@ bp_atividade = Blueprint("atividade", __name__, url_prefix="/api/v1/atividade")
 def get_all():
     query = Atividades.query.all()
     ativadade_schema = AtividadesSchema(many=True)
-    return jsonify(ativadade_schema.jsonify(query))
+    return ativadade_schema.jsonify(query)
 
 @bp_atividade.route("/create", methods=["POST"])
 @jwt_required()
@@ -30,3 +30,27 @@ def create_atividade():
     return jsonify({"msg": "sucess",
                    "dados" : atividade_schema.dump(nova_atividade)  
                    })
+
+
+@bp_atividade.route("/edit/<id>", methods=["PATCH"])
+@jwt_required()
+def edita_atividade(id: str):
+    atividade_schema = AtividadesSchema()
+    query = Atividades.query.filter(Atividades.id == id)
+    novos_dados = atividade_schema.load(request.json)
+    if query:
+        query.update(novos_dados)
+        db.session.commit()
+        return jsonify(msg = "atividade atualizada")
+    else:
+        return jsonify(msg = "atividade não encontrada")
+    
+
+@bp_atividade.route("/addParticipante", methods=["POST"])
+@jwt_required()
+def add_participante():
+    atividade_id = request.get_json().get("atividade_id")
+    participante_id = request.get_json().get("participante_id")
+    if atividade_id is None or participante_id is None:
+        return jsonify({"msg": "Dados incompletos"}), 404
+    atividade = Atividades.query.filter(Atividades.id == atividade_id).first()

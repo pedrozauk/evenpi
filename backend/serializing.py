@@ -27,7 +27,7 @@ class AtividadesSchema(ma.SQLAlchemySchema):
     palestrante = ma.auto_field(required=True)
     carga_horaria = ma.auto_field(required=True)
     status = ma.auto_field()
-    id_evento = ma.auto_field(required=True)
+    evento_id = ma.auto_field(required=True)
     tipo_atividade = ma.auto_field(required=True)
 
 

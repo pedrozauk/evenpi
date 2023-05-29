@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from backend.models import Evento
+from backend.models import Evento, User, Participante, Atividades, Ingressos
 from backend.ext.base import db
 from datetime import datetime
 from flask_sqlalchemy import session
@@ -78,3 +78,56 @@ def ativa_evento(id:str):
         "id" : evento.id,
         "status" : evento.status
     })
+
+@bp_evento.route("/addParticipante/", methods=["POST"])
+@jwt_required()
+def addParticipante():
+    user_id = request.get_json().get("user_id")
+    evento_id = request.get_json().get("evento_id")
+    if user_id is None or evento_id is None:
+        return jsonify({"msg": "Dados incompletos"}), 404
+    user = User.query.where(User.id == user_id).first()
+    evento = Evento.query.where(Evento.id == evento_id).first()
+    if user and evento:
+        participante = Participante()
+        ingresso = Ingressos()
+        # cria um ingresso para o participante
+        ingresso.descricao = "Ingresso para o evento " + evento.descricao
+        ingresso.valor = 10
+        ingresso.status = True
+        ingresso.evento_id = evento_id
+        db.session.add(ingresso)
+        db.session.commit()
+        db.session.refresh(ingresso)
+
+        # CRIA UM PARTICIPANTE
+        participante.user_id = user_id
+        participante.evento_id = evento_id
+        participante.status = True
+        participante.ingressos_id = ingresso.id
+        db.session.add(participante)
+        db.session.commit()
+        return jsonify({
+            "msg": "participante adicionado",
+            "user_id" : user_id,
+            "evento_id" : evento_id
+        })
+
+@bp_evento.route("/removeParticipante/", methods=["POST"])
+@jwt_required()
+def remove_participante():
+    pass
+
+@bp_evento.route("/participantes/<id>", methods=["GET"])
+@jwt_required()
+def get_participantes(id:str):
+    query = Participante.query.filter(Participante.evento_id == id)
+    retorno = {"data":[]}
+    for participante in query:
+        retorno["data"].append({
+            "id" : participante.id,
+            "user_id" : participante.user_id,
+            "evento_id" : participante.evento_id,
+            "status" : participante.status
+        })
+    return jsonify(retorno)
