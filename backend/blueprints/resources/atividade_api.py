@@ -54,3 +54,26 @@ def add_participante():
     if atividade_id is None or participante_id is None:
         return jsonify({"msg": "Dados incompletos"}), 404
     atividade = Atividades.query.filter(Atividades.id == atividade_id).first()
+    participante = Participante.query.filter(Participante.id == participante_id).first()
+    if atividade is None or participante is None:
+        return jsonify({"msg": "Participante ou Atividade não encontrado"}), 404
+    participante_atividade = ParticipanteAtividade()
+    participante_atividade.id_atividade = atividade_id
+    participante_atividade.id_participante = participante_id
+    participante_atividade.checkin = False
+    participante_atividade.status = True
+    db.session.add(participante_atividade)
+    db.session.commit()
+    return jsonify({"msg": "sucess"}), 200
+
+
+@bp_atividade.route("/participantes/<id>", methods=["GET"])
+@jwt_required()
+def get_participantes(id: str):
+    query = ParticipanteAtividade.query.filter(ParticipanteAtividade.id_atividade == id).all()
+    retorno = {"data":[]}
+    for participante_evento in query:
+        
+        retorno["data"].append(participanteevento.)
+    
+    return jsonify(retorno)
