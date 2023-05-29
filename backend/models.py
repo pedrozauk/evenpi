@@ -73,8 +73,8 @@ class TipoAtividade(db.Model):
 
 class ParticipanteAtividade(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    id_participante = db.Column(db.Integer, db.ForeignKey("participante.id"), unique=True)
-    id_atividade = db.Column(db.Integer, db.ForeignKey("atividades.id"), unique=True)
+    id_participante = db.Column(db.Integer, db.ForeignKey("participante.id"))
+    id_atividade = db.Column(db.Integer, db.ForeignKey("atividades.id"))
     checkin = db.Column(db.Boolean)
     status = db.Column(db.Boolean)
     fk_certificado_participante_atividade = db.relationship("CertificadoParticipanteAtividade", backref="participante_atividade", lazy=True)
