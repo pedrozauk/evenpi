@@ -72,8 +72,4 @@ def add_participante():
 def get_participantes(id: str):
     query = ParticipanteAtividade.query.filter(ParticipanteAtividade.id_atividade == id).all()
     retorno = {"data":[]}
-    for participante_evento in query:
-        
-        retorno["data"].append(participanteevento.)
-    
     return jsonify(retorno)

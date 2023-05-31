@@ -33,6 +33,7 @@ class Evento(db.Model):
     duracao = db.Column(db.Integer)
     data_fim = db.Column(db.DateTime)
     atividades = db.relationship('Atividades', backref='evento', lazy=True)
+    organizado = db.Column(db.Integer, db.ForeignKey("user.id"))
 
 class Participante(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -64,7 +65,7 @@ class Atividades(db.Model):
     status = db.Column(db.Boolean)
     carga_horaria = db.Column(db.Integer)
     tipo_atividade = db.Column(db.Integer, db.ForeignKey("tipo_atividade.id"))
-    evento_id = db.Column(db.Integer, db.ForeignKey('evento.id'), nullable=False, name="fk_evento")
+    evento_id = db.Column(db.Integer, db.ForeignKey('evento.id'))
 
 class TipoAtividade(db.Model):
     id = db.Column(db.Integer, primary_key = True)
