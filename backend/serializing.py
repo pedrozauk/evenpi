@@ -30,6 +30,11 @@ class AtividadesSchema(ma.SQLAlchemySchema):
     evento_id = ma.auto_field(required=True)
     tipo_atividade = ma.auto_field(required=True)
 
+class AtividadeSchemaToEdit(ma.SQLAlchemyAutoSchema):
+    
+    class Meta:
+        model = Atividades
+        include_fk = True    
 
 class CertificadoSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
