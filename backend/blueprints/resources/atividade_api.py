@@ -82,3 +82,17 @@ def get_participantes(id_atividade: int):
             return jsonify({"msg": "Dados incompletos"}), 404
         
         atividade = Atividades.query.where(Atividades.id == atividade_id)
+
+
+@bp_atividade.route("/checkin/<int:id_atividade>",methods=["GET"])
+def checkin_participante(id_atividade):
+    participante_id = request.get_json().get("participante_id",None)
+    if participante_id is None or id_atividade is None:
+        return jsonify(msg="Dados Incompletos")
+    participante_atividade = db.session.query(ParticipanteAtividade).filter(ParticipanteAtividade.id_participante == participante_id).first()
+    if participante_atividade is None:
+        return jsonify(msg="Participante não encontrado para esta atividade")
+    participante_atividade.checkin = True
+    db.session.commit()   
+    return jsonify(msg="Check-in realizado")
+

@@ -18,6 +18,6 @@ def gerar_certificado(dados: dict):
 
     # Fecha o Canvas
     c.showPage()
-    
+    c.save()
 
     return pdf_buffer
