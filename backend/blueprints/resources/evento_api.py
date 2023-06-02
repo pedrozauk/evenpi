@@ -5,7 +5,7 @@ from backend.ext.base import db
 from datetime import datetime
 from flask_sqlalchemy import session
 from backend.ext.base import db
-from backend.serializing import EventoSchema
+from backend.serializing import EventoSchema, AtividadesSchema
 bp_evento = Blueprint("evento", __name__, url_prefix="/api/v1/evento")
 
 @bp_evento.route("/get_all", methods=["GET"])
@@ -80,9 +80,20 @@ def ativa_evento(id:str):
     })
 
 
+@bp_evento.route("/atividades/<id_evento>", methods=["GET"])
+@jwt_required()
+def get_atividades_do_evento(id_evento:int):
+    atividade_schema = AtividadesSchema(many=True)
+    atividade_evento  = Atividades.query.where(Atividades.evento_id == id_evento)
+    if atividade_evento is None:
+        return jsonify(msg="Nenhuma atividade para o evento")
+    retorno = {"atividades": atividade_schema.dump(atividade_evento)}
+    return jsonify(retorno)
+
+
 @bp_evento.route("/participantes/<id>", methods=["GET", "POST", "DELETE"])
 @jwt_required()
-def get_participantes(id:str):
+def get_participantes(id:int):
     
     """
     Se o endpoint receber GET realiza a consulta de todos os participantes do id_evento passado na URL.
@@ -95,7 +106,7 @@ def get_participantes(id:str):
         retorno = {"evento":evento.descricao,
                    "participantes":[]}
         for participante in query:
-            retorno["data"].append({
+            retorno["participantes"].append({
                 "id" : participante.id,
                 "user_id" : participante.user_id,
                 "evento_id" : participante.evento_id,
@@ -138,8 +149,14 @@ def get_participantes(id:str):
         evento_id = id
         if user_id is None or evento_id is None:
             return jsonify({"msg": "Dados incompletos"}), 404
-        participante_evento = db.session.query(Participante).filter(Participante.user_id == user_id and Participante.evento_id == evento_id)
-        participante_ingresso = db.session.query(Ingressos).filter(Ingressos.evento_id == evento_id and Ingressos.fk_participante == participante_evento.id)
-        participante_evento.delete()
+        participante_evento = db.session.query(Participante).where(Participante.user_id == user_id and Participante.evento_id == evento_id).first()
+        participante_ingresso = db.session.query(Ingressos).where(Ingressos.evento_id == evento_id and Ingressos.fk_participante == participante_evento.id).first()
+        # se não encontrar nenhum ingresso com relação do participante retorna:
+        if participante_ingresso is None or participante_evento is None:
+            return jsonify({"msg":"Participante do evento não encontrado ou não vinculado a um ingresso"})
+        print(participante_ingresso)
+        db.session.delete(participante_evento)
+        db.session.delete(participante_ingresso)
         db.session.commit()
         return jsonify({"msg":"participante removido do evento"})
+    

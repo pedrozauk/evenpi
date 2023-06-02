@@ -46,30 +46,30 @@ def edita_atividade(id: str):
         return jsonify(msg = "atividade não encontrada")
     
 
-@bp_atividade.route("/addParticipante", methods=["POST"])
-@jwt_required()
-def add_participante():
-    atividade_id = request.get_json().get("atividade_id")
-    participante_id = request.get_json().get("participante_id")
-    if atividade_id is None or participante_id is None:
-        return jsonify({"msg": "Dados incompletos"}), 404
-    atividade = Atividades.query.filter(Atividades.id == atividade_id).first()
-    participante = Participante.query.filter(Participante.id == participante_id).first()
-    if atividade is None or participante is None:
-        return jsonify({"msg": "Participante ou Atividade não encontrado"}), 404
-    participante_atividade = ParticipanteAtividade()
-    participante_atividade.id_atividade = atividade_id
-    participante_atividade.id_participante = participante_id
-    participante_atividade.checkin = False
-    participante_atividade.status = True
-    db.session.add(participante_atividade)
-    db.session.commit()
-    return jsonify({"msg": "sucess"}), 200
 
 
-@bp_atividade.route("/participantes/<id>", methods=["GET"])
+@bp_atividade.route("/participantes/<id_atividade>", methods=["GET", "POST", "DELETE"])
 @jwt_required()
-def get_participantes(id: str):
-    query = ParticipanteAtividade.query.filter(ParticipanteAtividade.id_atividade == id).all()
-    retorno = {"data":[]}
-    return jsonify(retorno)
+def get_participantes(id_atividade: str):
+    if request.method == "GET":
+        query = ParticipanteAtividade.query.filter(ParticipanteAtividade.id_atividade == id_atividade).all()
+        retorno = {"data":[]}
+        return jsonify(retorno)
+    
+    if request.method == "POST":
+        atividade_id = id_atividade
+        participante_id = request.get_json().get("participante_id")
+        if atividade_id is None or participante_id is None:
+            return jsonify({"msg": "Dados incompletos"}), 404
+        atividade = Atividades.query.filter(Atividades.id == atividade_id).first()
+        participante = Participante.query.filter(Participante.id == participante_id).first()
+        if atividade is None or participante is None:
+            return jsonify({"msg": "Participante ou Atividade não encontrado"}), 404
+        participante_atividade = ParticipanteAtividade()
+        participante_atividade.id_atividade = atividade_id
+        participante_atividade.id_participante = participante_id
+        participante_atividade.checkin = False
+        participante_atividade.status = True
+        db.session.add(participante_atividade)
+        db.session.commit()
+        return jsonify({"msg": "sucess"}), 200

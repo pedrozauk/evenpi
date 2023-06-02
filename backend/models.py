@@ -37,8 +37,8 @@ class Evento(db.Model):
 
 class Participante(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), unique=True)
-    evento_id = db.Column(db.Integer, db.ForeignKey("evento.id"), unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    evento_id = db.Column(db.Integer, db.ForeignKey("evento.id"))
     ingressos_id = db.Column(db.Integer, db.ForeignKey("ingressos.id"), unique=True)
     status = db.Column(db.Boolean)
 
@@ -53,7 +53,7 @@ class Ingressos(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     descricao = db.Column(db.String(100))
     valor = db.Column(db.Float)
-    evento_id = db.Column(db.Integer, db.ForeignKey("evento.id"), unique=True)
+    evento_id = db.Column(db.Integer, db.ForeignKey("evento.id"))
     fk_participante = db.relationship("Participante", backref="ingressos", lazy=True) 
     status = db.Column(db.Boolean)
 
