@@ -8,5 +8,5 @@ EXTENSIONS =[
     "backend.ext.base:init_app",
     "backend.ext.serial:init_app",
     "backend.ext.migration:init_app",
-    "backend.ext.docs_api:init_app",
+    "backend.ext.docs_api:init_app"
 ]
