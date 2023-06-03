@@ -5,6 +5,8 @@ from backend.utils.pdf import gerar_certificado
 from backend.models import Participante, Certificado, ParticipanteAtividade, User, Atividades, Evento
 from backend.ext.base import db
 from datetime import datetime
+from flask_jwt_extended import jwt_required
+
 
 bp_certificado = Blueprint("certificado", __name__, url_prefix="/api/v1/certificado")
 
@@ -27,6 +29,7 @@ def carrega_dados_para_certificado(participante_id, atividade_id):
     
 
 @bp_certificado.route("/", methods=["GET"])
+@jwt_required()
 def download_certificado():
     if request.method == "GET":
         

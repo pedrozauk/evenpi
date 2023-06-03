@@ -27,9 +27,9 @@ def gerar_certificado(dados: dict):
 
     # Adicione o conteúdo dinâmico ao certificado
     c.drawString(80, 520, str(dados.get("nome")).upper())
-    c.drawString(80, 430, str(dados.get("descricao")).upper())
-    c.drawString(450, 320, f'{dados.get("carga_horaria")} horas')
-    c.drawString(350,375,str(dados.get('descricao_evento')).upper())
+    c.drawString(80, 428, str(dados.get("descricao")).upper())
+    c.drawString(350,365,str(dados.get('descricao_evento')).upper())
+    c.drawString(450, 312, f'{dados.get("carga_horaria")} horas')
 
     # Fecha o Canvas
     c.showPage()
