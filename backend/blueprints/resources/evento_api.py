@@ -41,18 +41,27 @@ def atividade():
     
         
 
-@bp_evento.route("/<int:id_evento>", methods=["PATCH"])
+@bp_evento.route("/<int:id_evento>", methods=["PATCH","GET"])
 def edit(id_evento):
-    evento_schema = EventoSchema()
-    query = Evento.query.filter(Evento.id == id_evento)
-    novos_dados = evento_schema.load(request.json)
+    if request.method == "PATCH":
+        evento_schema = EventoSchema()
+        query = Evento.query.filter(Evento.id == id_evento)
+        novos_dados = evento_schema.load(request.json)
 
-    if query:
-        query.update(novos_dados)
-        db.session.commit()
-        return jsonify(msg = "evento atualizado")
-    else:
-        return jsonify(msg = "evento não encontrado")
+        if query:
+            query.update(novos_dados)
+            db.session.commit()
+            return jsonify(msg = "evento atualizado")
+        else:
+            return jsonify(msg = "evento não encontrado")
+    if request.method == "GET":
+        evento_schema = EventoSchema()
+        query = Evento.query.filter(Evento.id == id_evento)
+        if query:
+            return evento_schema.jsonify(query)
+        else:
+            return jsonify(msg = "evento não encontrado")
+
 
 @bp_evento.route("/deactivate/<id>", methods=["GET"])
 @jwt_required()
