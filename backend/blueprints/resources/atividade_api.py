@@ -23,7 +23,7 @@ def atividade():
             nova_atividade = atividade_schema.load(request.json, session=db.session)
         except exceptions.ValidationError as e:
             return jsonify({"error":"Erro ao criar atividade", "message":"Campos obrigatórios em branco"}), 400
-        nova_atividade.status = True
+        nova_atividade.status = 'A'
         db.session.add(nova_atividade)
         db.session.commit()
         return jsonify({"msg": "sucess",
@@ -31,6 +31,27 @@ def atividade():
                     })
 
     
+@bp_atividade.route("/inicia/<int:id_atividade>", methods=["GET"])
+@jwt_required()
+def inicia_atividade(id_atividade: int):
+    query = Atividades.query.filter(Atividades.id == id_atividade).first()
+    if query:
+        query.status = 'I'
+        db.session.commit()
+        return jsonify(msg = "atividade iniciada")
+    else:
+        return jsonify(msg = "atividade não encontrada")
+
+@bp_atividade.route("/finaliza/<int:id_atividade>", methods=["GET"])
+@jwt_required()
+def finaliza_atividade(id_atividade: int):
+    query = Atividades.query.filter(Atividades.id == id_atividade).first()
+    if query:
+        query.status = 'F'
+        db.session.commit()
+        return jsonify(msg = "atividade finalizada")
+    else:
+        return jsonify(msg = "atividade não encontrada")
 
 
 @bp_atividade.route("/<int:id_atividade>", methods=["PATCH"])
