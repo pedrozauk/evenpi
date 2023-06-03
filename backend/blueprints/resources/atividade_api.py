@@ -31,7 +31,7 @@ def atividade():
                     })
 
     
-@bp_atividade.route("/inicia/<int:id_atividade>", methods=["GET"])
+@bp_atividade.route("/iniciar/<int:id_atividade>", methods=["GET"])
 @jwt_required()
 def inicia_atividade(id_atividade: int):
     query = Atividades.query.filter(Atividades.id == id_atividade).first()
@@ -42,7 +42,7 @@ def inicia_atividade(id_atividade: int):
     else:
         return jsonify(msg = "atividade não encontrada")
 
-@bp_atividade.route("/finaliza/<int:id_atividade>", methods=["GET"])
+@bp_atividade.route("/finalizar/<int:id_atividade>", methods=["GET"])
 @jwt_required()
 def finaliza_atividade(id_atividade: int):
     query = Atividades.query.filter(Atividades.id == id_atividade).first()

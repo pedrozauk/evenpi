@@ -81,7 +81,7 @@ class ParticipanteAtividade(db.Model):
     fk_certificado_participante_atividade = db.relationship("CertificadoParticipanteAtividade", backref="participante_atividade", lazy=True)
 
 class CertificadoParticipanteAtividade(db.Model):
-    id_certificado = db.Column(db.Integer, db.ForeignKey("certificado.id"), unique=True)
-    id_participante_atividade = db.Column(db.Integer, db.ForeignKey("participante_atividade.id"), unique=True)
+    id_certificado = db.Column(db.Integer, db.ForeignKey("certificado.id"), unique=True, primary_key = True)
+    id_participante_atividade = db.Column(db.Integer, db.ForeignKey("participante_atividade.id"), unique=True,primary_key = True)
 
 

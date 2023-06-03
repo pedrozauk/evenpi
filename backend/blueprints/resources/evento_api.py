@@ -112,6 +112,9 @@ def get_participantes(id:int):
     if request.method == "GET":
         query = Participante.query.filter(Participante.evento_id == id)
         evento = Evento.query.filter(Evento.id == id).first()
+        if query is None or evento is None:
+            return jsonify(msg="Evento não encontrado")
+
         retorno = {"evento":evento.descricao,
                    "participantes":[]}
         for participante in query:
@@ -122,6 +125,7 @@ def get_participantes(id:int):
                 "status" : participante.status
             })
         return jsonify(retorno)
+    
     if request.method == "POST":
         user_id = request.get_json().get("user_id")
         evento_id = id
@@ -153,6 +157,9 @@ def get_participantes(id:int):
                 "user_id" : user_id,
                 "evento_id" : evento_id
             }), 200
+        else:
+            return jsonify(msg="Participante ou evento não encontrado")
+        
     if request.method == "DELETE":
         user_id = request.json.get("user_id")
         evento_id = id
@@ -168,4 +175,3 @@ def get_participantes(id:int):
         db.session.delete(participante_ingresso)
         db.session.commit()
         return jsonify({"msg":"participante removido do evento"})
-    
