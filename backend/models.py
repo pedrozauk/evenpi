@@ -17,6 +17,9 @@ class User(db.Model):
     cellphone = db.Column(db.String(11))
     status = db.Column(db.Boolean)
     
+    def __repr__(self):
+        return f"User:{self.name}, CPF:{self.cpf}"
+
 class TypeUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     descricao = db.Column(db.String(100))
