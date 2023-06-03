@@ -89,7 +89,7 @@ def checkin_participante(id_atividade):
     participante_id = request.get_json().get("participante_id",None)
     if participante_id is None or id_atividade is None:
         return jsonify(msg="Dados Incompletos")
-    participante_atividade = db.session.query(ParticipanteAtividade).filter(ParticipanteAtividade.id_participante == participante_id).first()
+    participante_atividade = db.session.query(ParticipanteAtividade).filter(ParticipanteAtividade.id_participante == participante_id, ParticipanteAtividade.id_atividade == id_atividade).first()
     if participante_atividade is None:
         return jsonify(msg="Participante não encontrado para esta atividade")
     participante_atividade.checkin = True
