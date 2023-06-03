@@ -47,8 +47,6 @@ class Participante(db.Model):
 
 class Certificado(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    descricao = db.Column(db.String(100))
-    carga_horario =  db.Column(db.String(100))
     atividade_id = db.Column(db.Integer, db.ForeignKey("atividades.id"), unique=True)
     status = db.Column(db.Boolean)
 
@@ -65,7 +63,7 @@ class Atividades(db.Model):
     descricao = db.Column(db.String(100))
     data = db.Column(db.DateTime)
     palestrante = db.Column(db.String(100))
-    status = db.Column(db.Boolean)
+    status = db.Column(db.String(1))
     carga_horaria = db.Column(db.Integer)
     tipo_atividade = db.Column(db.Integer, db.ForeignKey("tipo_atividade.id"))
     evento_id = db.Column(db.Integer, db.ForeignKey('evento.id'))
@@ -80,11 +78,9 @@ class ParticipanteAtividade(db.Model):
     id_participante = db.Column(db.Integer, db.ForeignKey("participante.id"))
     id_atividade = db.Column(db.Integer, db.ForeignKey("atividades.id"))
     checkin = db.Column(db.Boolean)
-    status = db.Column(db.Boolean)
     fk_certificado_participante_atividade = db.relationship("CertificadoParticipanteAtividade", backref="participante_atividade", lazy=True)
 
 class CertificadoParticipanteAtividade(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
     id_certificado = db.Column(db.Integer, db.ForeignKey("certificado.id"), unique=True)
     id_participante_atividade = db.Column(db.Integer, db.ForeignKey("participante_atividade.id"), unique=True)
 

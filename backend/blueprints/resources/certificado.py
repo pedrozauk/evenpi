@@ -4,7 +4,7 @@ from flask import request, send_file, make_response
 from backend.utils.pdf import gerar_certificado
 from backend.models import Participante, Certificado, ParticipanteAtividade, User, Atividades
 from backend.ext.base import db
-
+from datetime import datetime
 
 bp_certificado = Blueprint("certificado", __name__, url_prefix="/api/v1/certificado")
 
@@ -21,20 +21,6 @@ def carrega_dados_para_certificado(participante_id, atividade_id):
     return dados
     
 
-@bp_certificado.route("/check",methods=["GET"])
-def verifica_disponibilidade():
-    id_participante = request.args.get("participante_id", None)
-    id_atividade = request.args.get("atividade", None)
-    if id_atividade is None or id_atividade is None:
-        return jsonify({"msg":"Dados incompletos"})
-    participante_atividade = db.session.query(ParticipanteAtividade).filter(ParticipanteAtividade.id_atividade == id_atividade, ParticipanteAtividade.id_participante == id_participante).first()
-    if participante_atividade is None:
-        return jsonify(msg="Participante ou Atividade não encontrada")
-    
-    if participante_atividade.checkin == True:
-        return jsonify(msg = "Pode acessar certificado")
-    else:
-        return jsonify(msg="Não pode acessar certificado.")
 
     
 
@@ -48,10 +34,13 @@ def download_certificado():
         if id_atividade is None or id_atividade is None:
             return jsonify({"msg":"Dados incompletos"})
         participante_atividade = db.session.query(ParticipanteAtividade).filter(ParticipanteAtividade.id_atividade == id_atividade, ParticipanteAtividade.id_participante == id_participante).first()
+        atividade = db.session.query(Atividades).filter(Atividades.id == id_atividade).first()
+        
+
         if participante_atividade is None:
             return jsonify(msg="Participante ou Atividade não encontrada")
         
-        if participante_atividade.checkin == True:     
+        if participante_atividade.checkin == True and atividade.status == 'F':     
             dados = carrega_dados_para_certificado(id_atividade,id_atividade)
             file = gerar_certificado(dados)
             #cria resposta
