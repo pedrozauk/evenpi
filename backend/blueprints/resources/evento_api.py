@@ -10,7 +10,7 @@ bp_evento = Blueprint("evento", __name__, url_prefix="/api/v1/evento")
 
 @bp_evento.route("/", methods=["GET","POST"])
 @jwt_required()
-def atividade():
+def evento():
     if request.method == "GET":
         query = Evento.query.all()
         retorno = {"data":[]}
