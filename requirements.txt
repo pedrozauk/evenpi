@@ -60,3 +60,4 @@ tzdata==2023.2
 webencodings==0.5.1
 Werkzeug==2.2.3
 gunicorn
+psycopg2
